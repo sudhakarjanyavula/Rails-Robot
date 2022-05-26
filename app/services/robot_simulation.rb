@@ -6,12 +6,12 @@ class RobotSimulation
     @positions = []
   end
 
-	def simulate
+  def simulate
     @commands.each do |command|
       if command.include? 'PLACE'
         set_initial_position
       elsif command == 'REPORT'
-        store_positions
+        store_postions
         @robot.save
       else
         process_command command
@@ -20,18 +20,17 @@ class RobotSimulation
     @robot.save
   end
 
-	def final_position
+  def final_position
     @positions
   end
-      
 
-	private
+  private
 
-	def store_positions
+  def store_postions
     @positions << "#{@robot.x_coordinate},#{@robot.y_coordinate},#{@robot.facing}"
   end
 
-	def process_command command
+  def process_command command
     case command
     when 'LEFT'
       move_left
@@ -42,37 +41,37 @@ class RobotSimulation
     end
   end
 
-	def move_left
+  def move_left
     index = DIRECTIONS.index @robot.facing
     @robot.facing = DIRECTIONS[index - 1]
   end
 
-	def move_right
+  def move_right
     index = DIRECTIONS.index @robot.facing
     index = index == 3 ? -1 : index
     @robot.facing = DIRECTIONS[index + 1]
   end
 
-	def move_forward
-		case @robot.facing
-		when 'NORTH'
-			@robot.y_coordinate += 1 if @robot.y_coordinate + 1 < 5
-		when 'SOUTH'
-			@robot.y_coordinate -= 1 if @robot.y_coordinate - 1 > 0
-		when 'EAST'
-			@robot.x_coordinate += 1 if @robot.x_coordinate + 1 < 5
-		when 'WEST'
-			@robot.x_coordinate -= 1 if @robot.x_coordinate - 1 > 0
-		end
-	end
+  def move_forward
+    case @robot.facing
+    when 'NORTH'
+      @robot.y_coordinate += 1 if @robot.y_coordinate + 1 < 5
+    when 'SOUTH'
+      @robot.y_coordinate -= 1 if @robot.y_coordinate  - 1 > 0
+    when 'EAST'
+      @robot.x_coordinate += 1 if @robot.y_coordinate + 1 < 5
+    when 'WEST'
+      @robot.x_coordinate -= 1 if @robot.x_coordinate - 1 > 0
+    end
+  end
 
+  def set_initial_position
+    return unless @commands.first.include? 'PLACE'
 
-	def set_initial_position
-		return unless @commands.first.include? 'PLACE'
-		command = @commands.first
-		command = command.split(' ')[1].split(',')
-		@robot.x_coordinate = command[0].to_i
-		@robot.y_coordinate = command[1].to_i
-		@robot.facing = command[2].to_s
-	end
+    command = @commands.first
+    command = command.split(' ')[1].split(',')
+    @robot.x_coordinate = command[0].to_i
+    @robot.y_coordinate = command[1].to_i
+    @robot.facing = command[2].to_s
+  end
 end
